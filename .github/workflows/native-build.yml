@@ -21,7 +21,7 @@ jobs:
         run: du -h android/app/build/outputs/bundle/release/*.aab
       - uses: actions/upload-artifact@v4
         with:
-          name: android-release-bundle-unsigned
+          name: android-release-bundle-debug-signed
           path: android/app/build/outputs/bundle/release/*.aab
           if-no-files-found: error
   ios-release-simulator:
