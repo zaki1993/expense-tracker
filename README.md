@@ -26,7 +26,7 @@ npx expo prebuild --platform android --non-interactive
 npx expo run:android
 ```
 
-The project is configured for Android package `com.zaki1993.expensetracker` and deep-link scheme `expensetracker`. iOS is not a supported or verified target.
+The project is configured for Android package `com.zaki1993.expensetracker`. When the Android OAuth client ID is configured, the app derives the Google native redirect scheme from that client ID; without it, the development fallback scheme is `expensetracker`. iOS is not a supported or verified target.
 
 ## Google Cloud OAuth setup
 
@@ -37,7 +37,7 @@ The project is configured for Android package `com.zaki1993.expensetracker` and 
 5. Rebuild after changing environment/config values: `npx expo prebuild --platform android --clean`, then build/install the app again.
 6. Open Settings, connect the Google account, then create a dedicated test spreadsheet or enter its spreadsheet ID. Test with a disposable spreadsheet before using personal financial data.
 
-**Integration limitation:** the OAuth and Sheets API paths are implemented, but they have not been end-to-end verified against a real Google Cloud project and a real Android device in this environment. Confirm the redirect URI shown by the installed app matches the configured OAuth flow; if Google rejects the redirect/client combination, configure the Android OAuth client/redirect for the chosen native AuthSession flow rather than bypassing validation. No credentials are included in the repository.
+**Integration limitation:** the OAuth and Sheets API paths are implemented, but they have not been end-to-end verified against a real Google Cloud project and a real Android device in this environment. The redirect URI uses the Google native Android pattern `com.googleusercontent.apps.<client-id-prefix>:/oauthredirect` and is derived from the configured Android client ID. Confirm the exact URI shown in Settings during device testing; if Google rejects the client/redirect combination, resolve the Google Cloud package/SHA-1/client configuration rather than bypassing validation. No credentials are included in the repository.
 
 ## Spreadsheet schema and synchronization
 
