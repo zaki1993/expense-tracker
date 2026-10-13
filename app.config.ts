@@ -1,9 +1,14 @@
 import type { ExpoConfig } from 'expo/config';
 
+const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID ?? '';
+const googleRedirectScheme = androidClientId
+  ? `com.googleusercontent.apps.${androidClientId.split('.')[0]}`
+  : 'expensetracker';
+
 const config: ExpoConfig = {
   name: 'Expense Tracker',
   slug: 'expense-tracker',
-  scheme: 'expensetracker',
+  scheme: googleRedirectScheme,
   version: '1.0.0',
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
@@ -13,7 +18,7 @@ const config: ExpoConfig = {
   },
   extra: {
     googleOAuth: {
-      androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID ?? '',
+      androidClientId,
     },
   },
 };
