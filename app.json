@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "Expense Tracker",
+    "slug": "expense-tracker",
+    "scheme": "expensetracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.zaki1993.expensetracker"
+    },
+    "android": {
+      "package": "com.zaki1993.expensetracker"
+    }
+  }
+}
