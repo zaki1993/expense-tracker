@@ -1,0 +1,3 @@
+import {transactionsToCsv} from '../../services/csv-export';
+const base:any={transaction_id:'id-1',date:'2026-10-13',type:'expense',amount_minor:1234,currency:'EUR',category_id:'food',description:'Coffee, "large"',merchant:'Cafe',payment_method:'card',account:'',notes:'line 1\nline 2',created_at:'now',updated_at:'now',recurring_rule_id:'',transfer_group_id:'',deleted_at:'',revision:1};
+test('exports CSV with escaped cells and headers',()=>{const csv=transactionsToCsv([base]);expect(csv).toContain('transaction_id,date,type');expect(csv).toContain('"Coffee, ""large"""');expect(csv).toContain('"line 1\nline 2"');});
