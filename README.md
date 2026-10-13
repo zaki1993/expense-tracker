@@ -48,7 +48,7 @@ These are versioned JSON files, not SQLite. Writes use a temporary file and a ba
 
 ## Tests and verification
 
-The GitHub Actions workflow runs `npm install`, `npm run typecheck` and `npm test`. Unit tests cover money parsing, report aggregation, CSV escaping, durable JSON restart/backup recovery, offline create/edit/delete behavior, and sync behavior (including uncertain-create reconciliation and partial failures).
+The GitHub Actions workflow runs `npm install`, `npm run typecheck`, `npm run lint` and `npm test`. Unit tests cover money parsing, report aggregation, CSV escaping, durable JSON restart/backup recovery, offline create/edit/delete behavior, and sync behavior (including uncertain-create reconciliation and partial failures).
 
 Not yet verified in this environment: real Google OAuth login/refresh/revocation, reads/writes against a real dedicated test spreadsheet, app restart on physical devices, Android/iOS release builds, native bundle size, startup latency and save latency. Native iOS builds require macOS/Xcode or a configured remote build service. Android release builds require the Android SDK and signing configuration.
 
