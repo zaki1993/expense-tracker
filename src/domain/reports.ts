@@ -1,0 +1,3 @@
+import type {Transaction} from './transaction';
+export function calculateTotals(xs:Transaction[],currency:string,start:string,end:string){let expenses=0,income=0,transferCount=0;for(const t of xs){if(t.deleted_at||t.currency!==currency||t.date<start||t.date>end)continue;if(t.type==='expense')expenses+=t.amount_minor;else if(t.type==='income')income+=t.amount_minor;else transferCount++;}return {expenses,income,net:income-expenses,transferCount};}
+export function totalsByCategory(xs:Transaction[],currency:string,start:string,end:string):Record<string,number>{const out:Record<string,number>={};for(const t of xs)if(!t.deleted_at&&t.type==='expense'&&t.currency===currency&&t.date>=start&&t.date<=end)out[t.category_id]=(out[t.category_id]??0)+t.amount_minor;return out;}
