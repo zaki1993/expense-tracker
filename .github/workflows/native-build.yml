@@ -1,11 +1,6 @@
 name: Native build verification
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths-ignore:
-      - README.md
-      - .env.example
 jobs:
   android-release-bundle:
     runs-on: ubuntu-latest
