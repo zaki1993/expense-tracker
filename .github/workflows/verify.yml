@@ -44,9 +44,6 @@ jobs:
       - name: Unit tests
         run: npm test -- --coverage
 
-      - name: Apply compatible dependency security updates
-        run: npm audit fix --no-fund || true
-
       - name: Generate dependency audit report
         if: always()
         shell: bash
