@@ -25,7 +25,15 @@ export function googleClientId(): string {
 }
 
 export function googleRedirectUri(): string {
-  const clientId = googleClientId();
+  let clientId = '';
+  try {
+    clientId = googleClientId();
+  } catch {
+    // Settings must still render before the user configures OAuth.
+  }
+  if (!clientId) {
+    return AuthSession.makeRedirectUri({ scheme: 'expensetracker', path: 'oauthredirect' });
+  }
   const scheme = `com.googleusercontent.apps.${clientId.split('.')[0]}`;
   return AuthSession.makeRedirectUri({ native: `${scheme}:/oauthredirect` });
 }
