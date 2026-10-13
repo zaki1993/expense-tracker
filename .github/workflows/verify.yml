@@ -1,21 +1,90 @@
-name: Verify
-concurrency:
-  group: verify-${{ github.ref }}
-  cancel-in-progress: true
+name: Android verification
+
 on:
   push:
     branches: [main]
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-verify-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  verify-and-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install
-      - run: npm run typecheck
-      - run: npm run lint
-      - run: npm test
+          cache: npm
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: TypeScript
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test -- --coverage
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Generate Android native project
+        run: npx expo prebuild --platform android --non-interactive
+
+      - name: Build release AAB and APK
+        run: |
+          cd android
+          ./gradlew --no-daemon bundleRelease assembleRelease
+
+      - name: Report artifact sizes
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          APK="android/app/build/outputs/apk/release/app-release.apk"
+          test -f "$AAB"
+          test -f "$APK"
+          node - "$AAB" "$APK" <<'NODE' | tee -a "$GITHUB_STEP_SUMMARY"
+          const fs = require('node:fs');
+          for (const path of process.argv.slice(2)) {
+            const bytes = fs.statSync(path).size;
+            console.log(`- ${path}: ${bytes} bytes (${(bytes / 1024 / 1024).toFixed(2)} MiB)`);
+          }
+          NODE
+
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: expense-tracker-android-release-aab-debug-signed
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: expense-tracker-android-release-apk-debug-signed
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
