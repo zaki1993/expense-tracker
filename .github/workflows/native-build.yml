@@ -38,5 +38,5 @@ jobs:
         run: |
           WORKSPACE=$(find ios -maxdepth 1 -name '*.xcworkspace' -print -quit)
           SCHEME=$(xcodebuild -list -json -workspace "$WORKSPACE" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).workspace.schemes[0]))")
-          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath ios/build/DerivedData CODE_SIGNING_ALLOWED=NO build
           find ios/build/Build/Products/Release-iphonesimulator -maxdepth 1 -name '*.app' -exec du -sh {} \;
