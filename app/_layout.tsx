@@ -1,1 +1,1 @@
-import {Stack} from 'expo-router';import {StatusBar} from 'expo-status-bar';export default function Layout(){return <><StatusBar style="auto"/><Stack screenOptions={{headerShown:false}}/></>; }
+import {useEffect} from 'react';import {Stack} from 'expo-router';import {StatusBar} from 'expo-status-bar';import {startSyncController} from '../src/services/sync-controller';export default function Layout(){useEffect(()=>startSyncController(),[]);return <><StatusBar style="auto"/><Stack screenOptions={{headerShown:false}}/></>;}
