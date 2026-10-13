@@ -48,14 +48,14 @@ These are versioned JSON files, not SQLite. Writes use a temporary file and a ba
 
 ## Tests and verification
 
-The GitHub Actions workflow runs `npm install`, `npm run typecheck` and `npm test`. Unit tests cover money parsing, report aggregation, CSV escaping, offline calculations and sync behavior (including uncertain-create reconciliation and partial failures).
+The GitHub Actions workflow runs `npm install`, `npm run typecheck` and `npm test`. Unit tests cover money parsing, report aggregation, CSV escaping, durable JSON restart/backup recovery, offline create/edit/delete behavior, and sync behavior (including uncertain-create reconciliation and partial failures).
 
 Not yet verified in this environment: real Google OAuth login/refresh/revocation, reads/writes against a real dedicated test spreadsheet, app restart on physical devices, Android/iOS release builds, native bundle size, startup latency and save latency. Native iOS builds require macOS/Xcode or a configured remote build service. Android release builds require the Android SDK and signing configuration.
 
 ## Known gaps
 
 - Full category CRUD/archive and budget editing UI are not yet complete, although their sheet schema is reserved.
-- Full Bulgarian/English localization, user-selectable light/dark theme, configurable currency throughout the UI, and a dedicated conflict-resolution screen remain to be implemented.
+- Full Bulgarian/English localization, user-selectable light/dark theme, full category CRUD/archive and budget editing UI, and a dedicated conflict-resolution screen remain to be implemented.
 - Automatic background sync is best effort only; use foreground/manual sync for dependable progress.
 - JSON cache is not encrypted. There is no backend, analytics, ad SDK, or paid service.
 - The sync strategy detects common conflicts but cannot guarantee exactly-once writes under concurrent edits because Google Sheets API does not offer atomic conditional row updates.
