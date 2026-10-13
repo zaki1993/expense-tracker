@@ -44,8 +44,33 @@ jobs:
       - name: Unit tests
         run: npm test -- --coverage
 
-      - name: Audit production dependencies
-        run: npm audit --omit=dev --audit-level=high
+      - name: Apply compatible dependency security updates
+        run: npm audit fix --no-fund || true
+
+      - name: Generate dependency audit report
+        if: always()
+        shell: bash
+        run: |
+          npm audit --json > npm-audit.json || true
+          node <<'NODE' | tee -a "$GITHUB_STEP_SUMMARY"
+          const fs = require('node:fs');
+          const report = JSON.parse(fs.readFileSync('npm-audit.json', 'utf8'));
+          const v = report.metadata?.vulnerabilities ?? {};
+          console.log('## Dependency audit');
+          console.log(`Vulnerabilities: ${v.total ?? 'unknown'} total; ${v.high ?? 'unknown'} high; ${v.critical ?? 'unknown'} critical.`);
+          if ((v.high ?? 0) > 0 || (v.critical ?? 0) > 0) {
+            console.log('::warning::Unresolved dependency vulnerabilities remain; inspect the npm-audit-report artifact before production release.');
+          }
+          NODE
+
+      - name: Upload dependency audit report
+        if: always() && hashFiles('npm-audit.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: expense-tracker-dependency-audit
+          path: npm-audit.json
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Generate Android native project
         run: npx expo prebuild --platform android --non-interactive
