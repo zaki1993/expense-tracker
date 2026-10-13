@@ -25,7 +25,9 @@ export function googleClientId(): string {
 }
 
 export function googleRedirectUri(): string {
-  return AuthSession.makeRedirectUri({ scheme: 'expensetracker', path: 'oauthredirect' });
+  const clientId = googleClientId();
+  const scheme = `com.googleusercontent.apps.${clientId.split('.')[0]}`;
+  return AuthSession.makeRedirectUri({ native: `${scheme}:/oauthredirect` });
 }
 
 export async function saveTokens(tokens: GoogleTokenSet) {
